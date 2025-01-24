@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Order Status</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .error {
+            color: red;
+            margin-bottom: 15px;
+        }
+        .success {
+            color: green;
+            margin-bottom: 15px;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: auto;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>Change Order Status</h1>
+
+    <!-- Display error or success messages -->
+    {% if error %}
+        <div class="error">{{ error }}</div>
+    {% endif %}
+    {% if success %}
+        <div class="success">{{ success }}</div>
+    {% endif %}
+
+    <!-- Form for changing order status -->
+    <form method="post">
+        {% csrf_token %}
+        <label for="order_id">Enter Order ID:</label>
+        <input type="number" id="order_id" name="order_id" required placeholder="Order ID">
+
+        <label for="status">Select New Status:</label>
+        <select id="status" name="status" required>
+            {% for key, value in order_status_choices %}
+                <option value="{{ key }}">{{ value }}</option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Change Status</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Change Order</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h2, h3 {
+            color: #333;
+        }
+        .error {
+            color: red;
+            margin-bottom: 15px;
+        }
+        .success {
+            color: green;
+            margin-bottom: 15px;
+        }
+        .product-item {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        form {
+            margin-top: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input, button {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+        }
+        button {
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            width: auto;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .remove-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        .remove-btn:hover {
+            background-color: #bd2130;
+        }
+    </style>
+</head>
+<body>
+    <h1>Change Order</h1>
+
+    <!-- Error Message -->
+    {% if error %}
+        <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <!-- Success Message -->
+    {% if success %}
+        <p class="success">{{ success }}</p>
+    {% endif %}
+
+    <!-- Display Order Details -->
+    {% if order %}
+        <h2>Order ID: {{ order.id }}</h2>
+        <h3>Current Products</h3>
+        {% if order_details %}
+            {% for detail in order_details %}
+                <div class="product-item">
+                    <div>
+                        <strong>{{ detail.product_name }}</strong>
+                        <p>Price: {{ detail.product_price }}</p>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="order_id" value="{{ order.id }}">
+                        <input type="hidden" name="action" value="remove">
+                        <input type="hidden" name="detail_id" value="{{ detail.id }}">
+                        <button type="submit" class="remove-btn">Remove</button>
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No products in this order.</p>
+        {% endif %}
+
+        <!-- Add Product Form -->
+        <h3>Add a Product</h3>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="order_id" value="{{ order.id }}">
+            <input type="hidden" name="action" value="add">
+            <label for="product_name">Product Name:</label>
+            <input type="text" id="product_name" name="product_name" placeholder="Enter product name" required>
+            <label for="product_price">Product Price:</label>
+            <input type="number" id="product_price" name="product_price" placeholder="Enter product price" step="0.01" required>
+            <button type="submit">Add Product</button>
+        </form>
+    {% else %}
+        <!-- Enter Order ID Form -->
+        <h3>Load an Order</h3>
+        <form method="get">
+            <label for="order_id">Order ID:</label>
+            <input type="number" id="order_id" name="order_id" placeholder="Enter order ID" required>
+            <button type="submit">Load Order</button>
+        </form>
+    {% endif %}
+</body>
+</html>
